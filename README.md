@@ -49,8 +49,8 @@ MCP-Discord provides the following Discord-related functionalities:
 
 ```bash
 # Clone the repository
-git clone https://github.com/barryyip0625/MCP-Discord.git
-cd MCP-Discord
+git clone https://github.com/barryyip0625/mcp-discord.git
+cd mcp-discord
 
 # Install dependencies
 npm install
@@ -70,7 +70,7 @@ DISCORD_TOKEN=your_discord_bot_token
 
 2. Using the `--config` parameter when launching:
 ```
-node path/to/MCP-Discord/build/index.js --config "{\"DISCORD_TOKEN\":\"your_discord_bot_token\"}"
+node path/to/mcp-discord/build/index.js --config "{\"DISCORD_TOKEN\":\"your_discord_bot_token\"}"
 ```
 
 ## Usage with Claude/Cursor
@@ -82,7 +82,7 @@ node path/to/MCP-Discord/build/index.js --config "{\"DISCORD_TOKEN\":\"your_disc
             "discord": {
                 "command": "node",
                 "args": [
-                    "path/to/MCP-Discord/build/index.js"
+                    "path/to/mcp-discord/build/index.js"
                 ],
                 "env": {
                     "DISCORD_TOKEN": "your_discord_bot_token"
@@ -102,7 +102,7 @@ node path/to/MCP-Discord/build/index.js --config "{\"DISCORD_TOKEN\":\"your_disc
                 "args": [
                     "/c",
                     "node",
-                    "path/to/MCP-Discord/build/index.js"
+                    "path/to/mcp-discord/build/index.js"
                 ],
                 "env": {
                     "DISCORD_TOKEN": "your_discord_bot_token"
