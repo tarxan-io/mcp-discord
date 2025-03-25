@@ -159,4 +159,4 @@ npm run dev
 
 ## License
 
-MIT License 
+[MIT License](https://github.com/barryyip0625/mcp-discord?tab=MIT-1-ov-file)
