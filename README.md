@@ -1,5 +1,7 @@
 # MCP-Discord
 
+[![smithery badge](https://smithery.ai/badge/@barryyip0625/mcp-discord)](https://smithery.ai/server/@barryyip0625/mcp-discord)
+
 A Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform.
 
 ## Overview
@@ -149,4 +151,4 @@ npm run dev
 
 ## License
 
-MIT License 
+[MIT License](https://github.com/barryyip0625/mcp-discord?tab=MIT-1-ov-file)
