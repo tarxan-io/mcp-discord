@@ -3,6 +3,10 @@
 
 A Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform.
 
+<a href="https://glama.ai/mcp/servers/@barryyip0625/mcp-discord">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@barryyip0625/mcp-discord/badge" alt="MCP-Discord MCP server" />
+</a>
+
 ## Overview
 
 MCP-Discord provides the following Discord-related functionalities:
