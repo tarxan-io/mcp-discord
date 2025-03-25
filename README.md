@@ -1,5 +1,4 @@
 # MCP-Discord
-
 [![smithery badge](https://smithery.ai/badge/@barryyip0625/mcp-discord)](https://smithery.ai/server/@barryyip0625/mcp-discord)
 
 A Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform.
@@ -49,6 +48,15 @@ MCP-Discord provides the following Discord-related functionalities:
 
 ## Installation
 
+### Installing via Smithery
+
+To install mcp-discord for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@barryyip0625/mcp-discord):
+
+```bash
+npx -y @smithery/cli install @barryyip0625/mcp-discord --client claude
+```
+
+### Manual Installation
 ```bash
 # Clone the repository
 git clone https://github.com/barryyip0625/mcp-discord.git
@@ -151,4 +159,4 @@ npm run dev
 
 ## License
 
-[MIT License](https://github.com/barryyip0625/mcp-discord?tab=MIT-1-ov-file)
+MIT License 
