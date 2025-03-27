@@ -153,6 +153,7 @@ node path/to/mcp-discord/build/index.js --config "{\"DISCORD_TOKEN\":\"your_disc
 - `discord_add_reaction`: Add a reaction to a message
 - `discord_add_multiple_reactions`: Add multiple reactions to a message
 - `discord_remove_reaction`: Remove a reaction from a message
+- `discord_delete_message`: Delete a specific message from a channel
 
 ## Development
 
