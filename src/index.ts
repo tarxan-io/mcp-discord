@@ -148,6 +148,37 @@ const DeleteMessageSchema = z.object({
     reason: z.string().optional()
 });
 
+const CreateWebhookSchema = z.object({
+    channelId: z.string(),
+    name: z.string(),
+    avatar: z.string().optional(),
+    reason: z.string().optional()
+});
+
+const SendWebhookMessageSchema = z.object({
+    webhookId: z.string(),
+    webhookToken: z.string(),
+    content: z.string(),
+    username: z.string().optional(),
+    avatarURL: z.string().optional(),
+    threadId: z.string().optional()
+});
+
+const EditWebhookSchema = z.object({
+    webhookId: z.string(),
+    webhookToken: z.string().optional(),
+    name: z.string().optional(),
+    avatar: z.string().optional(),
+    channelId: z.string().optional(),
+    reason: z.string().optional()
+});
+
+const DeleteWebhookSchema = z.object({
+    webhookId: z.string(),
+    webhookToken: z.string().optional(),
+    reason: z.string().optional()
+});
+
 // Set up the tool list
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
@@ -352,6 +383,65 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             reason: { type: "string" }
           },
           required: ["channelId", "messageId"]
+        }
+      },
+      {
+        name: "discord_create_webhook",
+        description: "Creates a new webhook for a Discord channel",
+        inputSchema: {
+          type: "object",
+          properties: {
+            channelId: { type: "string" },
+            name: { type: "string" },
+            avatar: { type: "string" },
+            reason: { type: "string" }
+          },
+          required: ["channelId", "name"]
+        }
+      },
+      {
+        name: "discord_send_webhook_message",
+        description: "Sends a message to a Discord channel using a webhook",
+        inputSchema: {
+          type: "object",
+          properties: {
+            webhookId: { type: "string" },
+            webhookToken: { type: "string" },
+            content: { type: "string" },
+            username: { type: "string" },
+            avatarURL: { type: "string" },
+            threadId: { type: "string" }
+          },
+          required: ["webhookId", "webhookToken", "content"]
+        }
+      },
+      {
+        name: "discord_edit_webhook",
+        description: "Edits an existing webhook for a Discord channel",
+        inputSchema: {
+          type: "object",
+          properties: {
+            webhookId: { type: "string" },
+            webhookToken: { type: "string" },
+            name: { type: "string" },
+            avatar: { type: "string" },
+            channelId: { type: "string" },
+            reason: { type: "string" }
+          },
+          required: ["webhookId"]
+        }
+      },
+      {
+        name: "discord_delete_webhook",
+        description: "Deletes an existing webhook for a Discord channel",
+        inputSchema: {
+          type: "object",
+          properties: {
+            webhookId: { type: "string" },
+            webhookToken: { type: "string" },
+            reason: { type: "string" }
+          },
+          required: ["webhookId"]
         }
       }
     ]
@@ -1067,6 +1157,168 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         } catch (error) {
           return {
             content: [{ type: "text", text: `Failed to delete message: ${error}` }],
+            isError: true
+          };
+        }
+      }
+
+      case "discord_create_webhook": {
+        const { channelId, name, avatar, reason } = CreateWebhookSchema.parse(args);
+        try {
+          if (!client.isReady()) {
+            return {
+              content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+              isError: true
+            };
+          }
+
+          const channel = await client.channels.fetch(channelId);
+          if (!channel || !channel.isTextBased()) {
+            return {
+              content: [{ type: "text", text: `Cannot find text channel with ID: ${channelId}` }],
+              isError: true
+            };
+          }
+
+          // Check if the channel supports webhooks
+          if (!('createWebhook' in channel)) {
+            return {
+              content: [{ type: "text", text: `Channel type does not support webhooks: ${channelId}` }],
+              isError: true
+            };
+          }
+
+          // Create the webhook
+          const webhook = await channel.createWebhook({
+            name: name,
+            avatar: avatar,
+            reason: reason
+          });
+
+          return {
+            content: [{ 
+              type: "text", 
+              text: `Successfully created webhook with ID: ${webhook.id} and token: ${webhook.token}` 
+            }]
+          };
+        } catch (error) {
+          return {
+            content: [{ type: "text", text: `Failed to create webhook: ${error}` }],
+            isError: true
+          };
+        }
+      }
+
+      case "discord_send_webhook_message": {
+        const { webhookId, webhookToken, content, username, avatarURL, threadId } = SendWebhookMessageSchema.parse(args);
+        try {
+          if (!client.isReady()) {
+            return {
+              content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+              isError: true
+            };
+          }
+
+          const webhook = await client.fetchWebhook(webhookId, webhookToken);
+          if (!webhook) {
+            return {
+              content: [{ type: "text", text: `Cannot find webhook with ID: ${webhookId}` }],
+              isError: true
+            };
+          }
+
+          // Send the message
+          await webhook.send({
+            content: content,
+            username: username,
+            avatarURL: avatarURL,
+            threadId: threadId
+          });
+
+          return {
+            content: [{ 
+              type: "text", 
+              text: `Successfully sent webhook message to webhook ID: ${webhookId}` 
+            }]
+          };
+        } catch (error) {
+          return {
+            content: [{ type: "text", text: `Failed to send webhook message: ${error}` }],
+            isError: true
+          };
+        }
+      }
+
+      case "discord_edit_webhook": {
+        const { webhookId, webhookToken, name, avatar, channelId, reason } = EditWebhookSchema.parse(args);
+        try {
+          if (!client.isReady()) {
+            return {
+              content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+              isError: true
+            };
+          }
+
+          const webhook = await client.fetchWebhook(webhookId, webhookToken);
+          if (!webhook) {
+            return {
+              content: [{ type: "text", text: `Cannot find webhook with ID: ${webhookId}` }],
+              isError: true
+            };
+          }
+
+          // Edit the webhook
+          await webhook.edit({
+            name: name,
+            avatar: avatar,
+            channel: channelId,
+            reason: reason
+          });
+
+          return {
+            content: [{ 
+              type: "text", 
+              text: `Successfully edited webhook with ID: ${webhook.id}` 
+            }]
+          };
+        } catch (error) {
+          return {
+            content: [{ type: "text", text: `Failed to edit webhook: ${error}` }],
+            isError: true
+          };
+        }
+      }
+
+      case "discord_delete_webhook": {
+        const { webhookId, webhookToken, reason } = DeleteWebhookSchema.parse(args);
+        try {
+          if (!client.isReady()) {
+            return {
+              content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+              isError: true
+            };
+          }
+
+          const webhook = await client.fetchWebhook(webhookId, webhookToken);
+          if (!webhook) {
+            return {
+              content: [{ type: "text", text: `Cannot find webhook with ID: ${webhookId}` }],
+              isError: true
+            };
+          }
+
+          // Delete the webhook
+          await webhook.delete(reason || "Webhook deleted via API");
+
+          return {
+            content: [{ 
+              type: "text", 
+              text: `Successfully deleted webhook with ID: ${webhook.id}` 
+            }]
+          };
+        } catch (error) {
+          return {
+            content: [{ type: "text", text: `Failed to delete webhook: ${error}` }],
             isError: true
           };
         }

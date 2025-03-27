@@ -19,6 +19,7 @@ MCP-Discord provides the following Discord-related functionalities:
 - Create/delete/reply to forum posts
 - Create/delete text channels
 - Add/remove message reactions
+- Create/edit/delete/use webhooks
 
 ## Table of Contents
 
@@ -30,6 +31,7 @@ MCP-Discord provides the following Discord-related functionalities:
   - [Channel Management](#channel-management)
   - [Forum Functions](#forum-functions)
   - [Messages and Reactions](#messages-and-reactions)
+  - [Webhook Management](#webhook-management)
 - [Development](#development)
 - [License](#license)
 
@@ -154,6 +156,13 @@ node path/to/mcp-discord/build/index.js --config "{\"DISCORD_TOKEN\":\"your_disc
 - `discord_add_multiple_reactions`: Add multiple reactions to a message
 - `discord_remove_reaction`: Remove a reaction from a message
 - `discord_delete_message`: Delete a specific message from a channel
+
+### Webhook Management
+
+- `discord_create_webhook`: Creates a new webhook for a Discord channel
+- `discord_send_webhook_message`: Sends a message to a Discord channel using a webhook
+- `discord_edit_webhook`: Edits an existing webhook for a Discord channel
+- `discord_delete_webhook`: Deletes an existing webhook for a Discord channel
 
 ## Development
 
