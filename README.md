@@ -12,11 +12,11 @@ A Discord MCP (Model Context Protocol) server that enables AI assistants to inte
 MCP-Discord provides the following Discord-related functionalities:
 
 - Login to Discord bot
-- Send messages to specified channels
 - Get server information
+- Read/delete channel messages
+- Send messages to specified channels
 - Retrieve forum channel lists
 - Create/delete/reply to forum posts
-- Read channel messages
 - Create/delete text channels
 - Add/remove message reactions
 
