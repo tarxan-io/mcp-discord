@@ -1,5 +1,5 @@
 # MCP-Discord
-[![smithery badge](https://smithery.ai/badge/@barryyip0625/mcp-discord)](https://smithery.ai/server/@barryyip0625/mcp-discord)
+[![smithery badge](https://smithery.ai/badge/@barryyip0625/mcp-discord)](https://smithery.ai/server/@barryyip0625/mcp-discord) ![](https://badge.mcpx.dev?type=server 'MCP Server')
 
 A Discord MCP (Model Context Protocol) server that enables AI assistants to interact with the Discord platform.
 
