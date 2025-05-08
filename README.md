@@ -77,56 +77,119 @@ npm run build
 
 ## Configuration
 
-A Discord bot token is required for proper operation. You can provide it in two ways:
+A Discord bot token is required for proper operation. The server supports two transport methods: stdio and streamable HTTP.
+
+### Transport Methods
+
+1. **stdio** (Default)
+   - Traditional stdio transport for basic usage
+   - Suitable for simple integrations
+
+2. **streamable HTTP**
+   - HTTP-based transport for more advanced scenarios
+   - Supports stateless operation
+   - Configurable port number
+   - Powered by Smithery SDK for improved reliability and performance
+
+### Configuration Options
+
+You can provide configuration in two ways:
 
 1. Environment variables:
-```
+```bash
 DISCORD_TOKEN=your_discord_bot_token
 ```
 
-2. Using the `--config` parameter when launching:
-```
-node path/to/mcp-discord/build/index.js --config "{\"DISCORD_TOKEN\":\"your_discord_bot_token\"}"
+2. Using command line arguments:
+```bash
+# For stdio transport (default)
+node build/index.js --config "your_discord_bot_token"
+
+# For streamable HTTP transport
+node build/index.js --transport http --port 3000 --config "your_discord_bot_token"
 ```
 
 ## Usage with Claude/Cursor
-- Claude
-  
-    ```json
-    {
-        "mcpServers": {
-            "discord": {
-                "command": "node",
-                "args": [
-                    "path/to/mcp-discord/build/index.js"
-                ],
-                "env": {
-                    "DISCORD_TOKEN": "your_discord_bot_token"
-                }
-            }
+
+### Claude
+
+1. Using stdio transport:
+```json
+{
+    "mcpServers": {
+        "discord": {
+            "command": "node",
+            "args": [
+                "path/to/mcp-discord/build/index.js",
+                "--config",
+                "your_discord_bot_token"
+            ]
         }
     }
-    ```
+}
+```
 
-- Cursor
-
-    ```json
-    {
-        "mcpServers": {
-            "discord": {
-                "command": "cmd",
-                "args": [
-                    "/c",
-                    "node",
-                    "path/to/mcp-discord/build/index.js"
-                ],
-                "env": {
-                    "DISCORD_TOKEN": "your_discord_bot_token"
-                }
-             }
-         }
+2. Using streamable HTTP transport:
+```json
+{
+    "mcpServers": {
+        "discord": {
+            "command": "node",
+            "args": [
+                "path/to/mcp-discord/build/index.js",
+                "--transport",
+                "http",
+                "--port",
+                "3000",
+                "--config",
+                "your_discord_bot_token"
+            ]
+        }
     }
-    ```
+}
+```
+
+### Cursor
+
+1. Using stdio transport:
+```json
+{
+    "mcpServers": {
+        "discord": {
+            "command": "cmd",
+            "args": [
+                "/c",
+                "node",
+                "path/to/mcp-discord/build/index.js",
+                "--config",
+                "your_discord_bot_token"
+            ]
+        }
+    }
+}
+```
+
+2. Using streamable HTTP transport:
+```json
+{
+    "mcpServers": {
+        "discord": {
+            "command": "cmd",
+            "args": [
+                "/c",
+                "node",
+                "path/to/mcp-discord/build/index.js",
+                "--transport",
+                "http",
+                "--port",
+                "3000",
+                "--config",
+                "your_discord_bot_token"
+            ]
+        }
+    }
+}
+```
 
 ## Tools Documentation
 

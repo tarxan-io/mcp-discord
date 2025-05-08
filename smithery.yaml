@@ -1,9 +1,9 @@
 # Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
 
-startCommand:
-  type: stdio
+version: 1
+start:
+  type: http
   configSchema:
-    # JSON Schema defining the configuration options for the MCP.
     type: object
     required:
       - discordToken
@@ -11,13 +11,27 @@ startCommand:
       discordToken:
         type: string
         description: Discord bot token. Obtain this from the Discord Developer Portal.
-  commandFunction:
-    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
-    |-
-    (config) => ({
-      command: 'node',
-      args: ['build/index.js'],
-      env: { DISCORD_TOKEN: config.discordToken }
-    })
+      port:
+        type: number
+        description: Port number for the HTTP server
+        default: 3000
+  command: 
+    function: |
+      (config) => ({
+        command: 'node',
+        args: [
+          'build/index.js',
+          '--transport',
+          'http',
+          '--port',
+          config.port || 3000,
+          '--config',
+          config.discordToken
+        ],
+        env: {
+          NODE_ENV: 'production'
+        }
+      })
   exampleConfig:
     discordToken: YOUR_DISCORD_BOT_TOKEN
+    port: 3000
