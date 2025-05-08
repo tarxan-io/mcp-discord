@@ -16,7 +16,8 @@ COPY . .
 # Build the TypeScript code
 RUN npm run build
 
-# Expose any port if needed (Not required for stdio deployment)
+# Expose HTTP port (default 3000 as specified in smithery.yaml)
+EXPOSE 3000
 
-# Default command to run the MCP server
-CMD ["node", "build/index.js"]
+# Default command to run the MCP server with HTTP transport
+CMD ["node", "build/index.js", "--transport", "http", "--port", "3000"]
