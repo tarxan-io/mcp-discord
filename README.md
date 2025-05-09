@@ -56,11 +56,7 @@ MCP-Discord provides the following Discord-related functionalities:
 
 ### Installing via Smithery
 
-To install mcp-discord for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@barryyip0625/mcp-discord):
-
-```bash
-npx -y @smithery/cli install @barryyip0625/mcp-discord --client claude
-```
+To install mcp-discord automatically via [Smithery](https://smithery.ai/server/@barryyip0625/mcp-discord)
 
 ### Manual Installation
 ```bash
