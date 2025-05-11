@@ -85,7 +85,6 @@ A Discord bot token is required for proper operation. The server supports two tr
    - HTTP-based transport for more advanced scenarios
    - Supports stateless operation
    - Configurable port number
-   - Powered by Smithery SDK for improved reliability and performance
 
 ### Configuration Options
 
