@@ -26,6 +26,7 @@ import {
   deleteWebhookHandler
 } from './tools/tools.js';
 import { Client } from "discord.js";
+import { info, error } from './logger.js';
 
 export interface MCPTransport {
     start(server: Server): Promise<void>;
@@ -64,9 +65,9 @@ export class StreamableHttpTransport implements MCPTransport {
     private setupEndpoints() {
         // Handler for POST requests
         this.app.post('/mcp', (req: Request, res: Response) => {
-            console.log('Received MCP request:', req.body);
+            info('Received MCP request: ' + JSON.stringify(req.body));
             this.handleMcpRequest(req, res).catch(error => {
-                console.error('Unhandled error in MCP request:', error);
+                error('Unhandled error in MCP request: ' + String(error));
             });
         });
 
@@ -98,7 +99,7 @@ export class StreamableHttpTransport implements MCPTransport {
                 });
             }
             
-            console.log('Request body:', JSON.stringify(req.body));
+            info('Request body: ' + JSON.stringify(req.body));
             
             // Handle all tool requests in a generic way
             if (!req.body.method) {
@@ -224,7 +225,7 @@ export class StreamableHttpTransport implements MCPTransport {
                         });
                 }
                 
-                console.log(`Request for ${method} handled successfully`);
+                info(`Request for ${method} handled successfully`);
                 
                 // Handle the case where tool handlers return { content, isError }
                 if (result && typeof result === 'object' && 'content' in result) {
@@ -257,34 +258,32 @@ export class StreamableHttpTransport implements MCPTransport {
                     result: result
                 });
                 
-            } catch (error) {
-                console.error('Error processing tool request:', error);
-                
+            } catch (err) {
+                error('Error processing tool request: ' + String(err));
                 // Handle validation errors
-                if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
+                if (err && typeof err === 'object' && 'name' in err && err.name === 'ZodError') {
                     return res.status(400).json({
                         jsonrpc: '2.0',
                         error: {
                             code: -32602,
-                            message: `Invalid parameters: ${error && typeof error === 'object' && 'message' in error ? String(error.message) : 'Unknown validation error'}`,
+                            message: `Invalid parameters: ${err && typeof err === 'object' && 'message' in err ? String((err as any).message) : 'Unknown validation error'}`,
                         },
                         id: req.body?.id || null,
                     });
                 }
-                
                 // Handle all other errors
                 return res.status(500).json({
                     jsonrpc: '2.0',
                     error: {
                         code: -32603,
-                        message: error instanceof Error ? error.message : 'Unknown error',
+                        message: err instanceof Error ? err.message : 'Unknown error',
                     },
                     id: req.body?.id || null,
                 });
             }
             
-        } catch (error) {
-            console.error('Error handling MCP request:', error);
+        } catch (err) {
+            error('Error handling MCP request: ' + String(err));
             if (!res.headersSent) {
                 res.status(500).json({
                     jsonrpc: '2.0',
@@ -300,7 +299,7 @@ export class StreamableHttpTransport implements MCPTransport {
 
     async start(server: Server): Promise<void> {
         this.server = server;
-        console.log('Starting HTTP transport with server:', !!this.server);
+        info('Starting HTTP transport with server: ' + String(!!this.server));
         
         // Try to get client from the DiscordMCPServer instance
         // First, check if the server is passed from DiscordMCPServer
@@ -311,25 +310,25 @@ export class StreamableHttpTransport implements MCPTransport {
             
             if (anyServer._context?.client) {
                 client = anyServer._context.client;
-                console.log('Found client in server._context');
+                info('Found client in server._context');
             } 
             // Also check if the server object has client directly
             else if (anyServer.client instanceof Client) {
                 client = anyServer.client;
-                console.log('Found client directly on server object');
+                info('Found client directly on server object');
             }
             // Look in parent object if available
             else if (anyServer._parent?.client instanceof Client) {
                 client = anyServer._parent.client;
-                console.log('Found client in server._parent');
+                info('Found client in server._parent');
             }
             
             if (client) {
                 this.toolContext = createToolContext(client);
-                console.log('Tool context initialized with Discord client');
+                info('Tool context initialized with Discord client');
             } else {
                 // Create a dummy client for testing - allows list_tools to work
-                console.log('Unable to get Discord client. Creating tool context without client.');
+                info('Unable to get Discord client. Creating tool context without client.');
                 this.toolContext = createToolContext({} as Client);
             }
         }
@@ -341,11 +340,11 @@ export class StreamableHttpTransport implements MCPTransport {
         
         // Connect the transport
         await this.server.connect(this.transport);
-        console.log('Transport connected');
+        info('Transport connected');
 
         return new Promise((resolve) => {
             this.httpServer = this.app.listen(this.port, () => {
-                console.log(`MCP Server listening on port ${this.port}`);
+                info(`MCP Server listening on port ${this.port}`);
                 resolve();
             });
         });
@@ -365,7 +364,7 @@ export class StreamableHttpTransport implements MCPTransport {
         if (this.httpServer) {
             return new Promise((resolve) => {
                 this.httpServer.close(() => {
-                    console.log('HTTP server closed');
+                    info('HTTP server closed');
                     this.httpServer = null;
                     resolve();
                 });

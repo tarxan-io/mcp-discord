@@ -15,7 +15,7 @@ export const loginHandler: ToolHandler = async (args, { client }) => {
     // loginHandler doesn't directly handle token, it needs to be set before invocation
     if (!client.token) {
       return {
-        content: [{ type: "text", text: "Discord token not configured. Cannot log in." }],
+        content: [{ type: "text", text: "Discord token not configured. Cannot log in. Please check the following:\n1. Make sure the token is correctly set in your config or environment variables.\n\n2. Ensure all required privileged intents (Message Content, Server Members, Presence) are enabled in the Discord Developer Portal for your bot application." }],
         isError: true
       };
     }

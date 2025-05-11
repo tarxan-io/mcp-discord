@@ -2,6 +2,7 @@ import { Client, GatewayIntentBits } from "discord.js";
 import { config as dotenvConfig } from 'dotenv';
 import { DiscordMCPServer } from './server.js';
 import { StdioTransport, StreamableHttpTransport } from './transport.js';
+import { info, error } from './logger.js';
 
 // Load environment variables from .env file if exists
 dotenvConfig();
@@ -19,7 +20,7 @@ const config = {
                     try {
                         const parsedConfig = JSON.parse(configArg);
                         return parsedConfig.DISCORD_TOKEN;
-                    } catch (e) {
+                    } catch (err) {
                         // If not valid JSON, try using the string directly
                         return configArg;
                     }
@@ -27,8 +28,8 @@ const config = {
             }
             // Then try environment variable
             return process.env.DISCORD_TOKEN;
-        } catch (error) {
-            console.error('Error parsing config:', error);
+        } catch (err) {
+            error('Error parsing config: ' + String(err));
             return null;
         }
     })(),
@@ -53,7 +54,7 @@ const config = {
 };
 
 if (!config.DISCORD_TOKEN) {
-    console.error('Discord token not found. Please provide it via --config argument or environment variable.');
+    error('Discord token not found. Please provide it via --config argument or environment variable.');
     process.exit(1);
 }
 
@@ -77,12 +78,16 @@ const autoLogin = async () => {
     if (token) {
         try {
             await client.login(token);
-            console.log('Successfully logged in to Discord');
-        } catch (error) {
-            console.error("Auto-login failed:", error);
+            info('Successfully logged in to Discord');
+        } catch (err: any) {
+            if (typeof err.message === 'string' && err.message.includes('Privileged intent provided is not enabled or whitelisted')) {
+                error('Login failed: One or more privileged intents are not enabled in the Discord Developer Portal. Please enable the required intents.');
+            } else {
+                error('Auto-login failed: ' + String(err));
+            }
         }
     } else {
-        console.log("No Discord token found in config, skipping auto-login");
+        info("No Discord token found in config, skipping auto-login");
     }
 };
 
@@ -90,13 +95,13 @@ const autoLogin = async () => {
 const initializeTransport = () => {
     switch (config.TRANSPORT.toLowerCase()) {
         case 'http':
-            console.log(`Initializing HTTP transport on port ${config.HTTP_PORT}`);
+            info(`Initializing HTTP transport on port ${config.HTTP_PORT}`);
             return new StreamableHttpTransport(config.HTTP_PORT);
         case 'stdio':
-            console.log('Initializing stdio transport');
+            info('Initializing stdio transport');
             return new StdioTransport();
         default:
-            console.error(`Unknown transport type: ${config.TRANSPORT}. Falling back to stdio.`);
+            error(`Unknown transport type: ${config.TRANSPORT}. Falling back to stdio.`);
             return new StdioTransport();
     }
 };
@@ -110,8 +115,8 @@ const mcpServer = new DiscordMCPServer(client, transport);
 
 try {
     await mcpServer.start();
-    console.log('MCP server started successfully');
-} catch (error) {
-    console.error('Failed to start MCP server:', error);
+    info('MCP server started successfully');
+} catch (err) {
+    error('Failed to start MCP server: ' + String(err));
     process.exit(1);
 }
