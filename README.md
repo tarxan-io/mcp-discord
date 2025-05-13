@@ -67,6 +67,10 @@ MCP-Discord provides the following Discord-related functionalities:
     - **Custom permissions (minimum required):**
         https://discord.com/oauth2/authorize?client_id=INSERT_CLIENT_ID_HERE&scope=bot&permissions=52076489808
 
+> **Note:**  
+> According to Discord's security model, a bot can only access information from servers it has been explicitly added to.  
+> If you want to use this MCP server to access a specific Discord server, you must add the bot to that server first.  
+> Use the invite link below to add the bot to your target server.
 
 ## Installation
 
