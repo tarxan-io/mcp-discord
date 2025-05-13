@@ -44,13 +44,29 @@ MCP-Discord provides the following Discord-related functionalities:
   - Message Content Intent enabled
   - Server Members Intent enabled
   - Presence Intent enabled
-- Permissions in your Discord server:
+- Permissions required in your Discord server:
+
+  #### Easiest Setup
+  - Administrator (Recommended for quick setup and full functionality)
+
+  #### Or, select only the required permissions:
   - Send Messages
   - Create Public Threads
   - Send Messages in Threads
+  - Manage Messages
   - Manage Threads
   - Manage Channels
+  - Manage Webhooks
   - Add Reactions
+  - View Channel
+
+- Add your Discord bot to your server
+  - To add your Discord bot to your server, use one of the following invite links (replace `INSERT_CLIENT_ID_HERE` with your bot's client ID):
+    - **Administrator (full access):**
+        https://discord.com/oauth2/authorize?client_id=INSERT_CLIENT_ID_HERE&scope=bot&permissions=8
+    - **Custom permissions (minimum required):**
+        https://discord.com/oauth2/authorize?client_id=INSERT_CLIENT_ID_HERE&scope=bot&permissions=52076489808
+
 
 ## Installation
 
