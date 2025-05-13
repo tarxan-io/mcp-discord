@@ -1,6 +1,7 @@
 import { ChannelType, ForumChannel } from 'discord.js';
 import { GetForumChannelsSchema, CreateForumPostSchema, GetForumPostSchema, ReplyToForumSchema, DeleteForumPostSchema } from '../schemas.js';
 import { ToolHandler } from './types.js';
+import { handleDiscordError } from "../errorHandler.js";
 
 export const getForumChannelsHandler: ToolHandler = async (args, { client }) => {
   const { guildId } = GetForumChannelsSchema.parse(args);
@@ -44,10 +45,7 @@ export const getForumChannelsHandler: ToolHandler = async (args, { client }) => 
       content: [{ type: "text", text: JSON.stringify(forumInfo, null, 2) }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to fetch forum channels: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 };
 
@@ -99,10 +97,7 @@ export const createForumPostHandler: ToolHandler = async (args, { client }) => {
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to create forum post: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 };
 
@@ -146,10 +141,7 @@ export const getForumPostHandler: ToolHandler = async (args, { client }) => {
       content: [{ type: "text", text: JSON.stringify(threadDetails, null, 2) }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to fetch forum post: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 };
 
@@ -189,10 +181,7 @@ export const replyToForumHandler: ToolHandler = async (args, { client }) => {
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to reply to forum post: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 };
 
@@ -225,9 +214,6 @@ export const deleteForumPostHandler: ToolHandler = async (args, { client }) => {
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to delete forum post: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 }; 

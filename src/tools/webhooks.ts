@@ -6,6 +6,7 @@ import {
   EditWebhookSchema,
   DeleteWebhookSchema
 } from "../schemas.js";
+import { handleDiscordError } from "../errorHandler.js";
 
 // Create webhook handler
 export async function createWebhookHandler(
@@ -51,10 +52,7 @@ export async function createWebhookHandler(
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to create webhook: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 }
 
@@ -95,10 +93,7 @@ export async function sendWebhookMessageHandler(
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to send webhook message: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 }
 
@@ -139,10 +134,7 @@ export async function editWebhookHandler(
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to edit webhook: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 }
 
@@ -178,9 +170,6 @@ export async function deleteWebhookHandler(
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to delete webhook: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 } 

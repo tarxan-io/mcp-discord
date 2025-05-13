@@ -6,6 +6,7 @@ import {
   RemoveReactionSchema,
   DeleteMessageSchema
 } from "../schemas.js";
+import { handleDiscordError } from "../errorHandler.js";
 
 // Add reaction handler
 export async function addReactionHandler(
@@ -47,10 +48,7 @@ export async function addReactionHandler(
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to add reaction: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 }
 
@@ -98,10 +96,7 @@ export async function addMultipleReactionsHandler(
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to add reactions: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 }
 
@@ -168,10 +163,7 @@ export async function removeReactionHandler(
       };
     }
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to remove reaction: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 }
 
@@ -216,9 +208,6 @@ export async function deleteMessageHandler(
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to delete message: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 } 

@@ -1,5 +1,6 @@
 import { DiscordLoginSchema } from '../schemas.js';
 import { ToolHandler } from './types.js';
+import { handleDiscordError } from "../errorHandler.js";
 
 export const loginHandler: ToolHandler = async (args, { client }) => {
   DiscordLoginSchema.parse(args);
@@ -25,9 +26,6 @@ export const loginHandler: ToolHandler = async (args, { client }) => {
       content: [{ type: "text", text: `Successfully logged in to Discord: ${client.user?.tag}` }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Login failed: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 }; 

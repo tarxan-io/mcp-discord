@@ -7,6 +7,7 @@ import {
   ReadMessagesSchema,
   GetServerInfoSchema
 } from "../schemas.js";
+import { handleDiscordError } from "../errorHandler.js";
 
   // Text channel creation handler
 export async function createTextChannelHandler(
@@ -44,10 +45,7 @@ export async function createTextChannelHandler(
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to create text channel: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 }
 
@@ -91,10 +89,7 @@ export async function deleteChannelHandler(
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to delete channel: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 }
 
@@ -163,10 +158,7 @@ export async function readMessagesHandler(
       }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to read messages: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 }
 
@@ -233,9 +225,6 @@ export async function getServerInfoHandler(
       content: [{ type: "text", text: JSON.stringify(guildInfo, null, 2) }]
     };
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Failed to fetch server info: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 } 

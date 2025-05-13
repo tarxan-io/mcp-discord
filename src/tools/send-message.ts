@@ -1,5 +1,6 @@
 import { SendMessageSchema } from '../schemas.js';
 import { ToolHandler } from './types.js';
+import { handleDiscordError } from "../errorHandler.js";
 
 export const sendMessageHandler: ToolHandler = async (args, { client }) => {
   const { channelId, message } = SendMessageSchema.parse(args);
@@ -33,9 +34,6 @@ export const sendMessageHandler: ToolHandler = async (args, { client }) => {
       };
     }
   } catch (error) {
-    return {
-      content: [{ type: "text", text: `Send message failed: ${error}` }],
-      isError: true
-    };
+    return handleDiscordError(error);
   }
 }; 
