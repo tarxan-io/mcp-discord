@@ -48,7 +48,7 @@ const config = {
         if (portIndex !== -1 && portIndex + 1 < process.argv.length) {
             return parseInt(process.argv[portIndex + 1]);
         }
-        // Default port
+        // Default port for MCP
         return 8080;
     })()
 };
@@ -90,7 +90,7 @@ const autoLogin = async () => {
 const initializeTransport = () => {
     switch (config.TRANSPORT.toLowerCase()) {
         case 'http':
-            info(`Initializing HTTP transport on port ${config.HTTP_PORT}`);
+            info(`Initializing HTTP transport on 0.0.0.0:${config.HTTP_PORT}`);
             return new StreamableHttpTransport(config.HTTP_PORT);
         case 'stdio':
             info('Initializing stdio transport');

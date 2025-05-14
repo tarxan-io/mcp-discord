@@ -56,7 +56,7 @@ export class StreamableHttpTransport implements MCPTransport {
     private transport: StreamableHTTPServerTransport | null = null;
     private toolContext: ReturnType<typeof createToolContext> | null = null;
 
-    constructor(private port: number = 3000) {
+    constructor(private port: number = 8080) {
         this.app = express();
         this.app.use(express.json());
         this.setupEndpoints();
@@ -343,8 +343,8 @@ export class StreamableHttpTransport implements MCPTransport {
         info('Transport connected');
 
         return new Promise((resolve) => {
-            this.httpServer = this.app.listen(this.port, () => {
-                info(`MCP Server listening on port ${this.port}`);
+            this.httpServer = this.app.listen(this.port, '0.0.0.0', () => {
+                info(`MCP Server listening on 0.0.0.0:${this.port}`);
                 resolve();
             });
         });
