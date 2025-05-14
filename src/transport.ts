@@ -161,7 +161,13 @@ export class StreamableHttpTransport implements MCPTransport {
                             id: req.body.id
                         });
                         
+                    case 'tools/list':
+                        // New MCP method name format
+                        result = { tools: toolList };
+                        break;
+                        
                     case 'list_tools':
+                        // Legacy method name for backward compatibility
                         result = { tools: toolList };
                         break;
                         
