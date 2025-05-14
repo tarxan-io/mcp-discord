@@ -16,7 +16,8 @@ COPY . .
 # Build the TypeScript code
 RUN npm run build
 
-# Expose any port if needed (Not required for stdio deployment)
+# Expose HTTP port
+EXPOSE 8080
 
-# Default command to run the MCP server
-CMD ["node", "build/index.js"]
+# Default command to run the MCP server with HTTP transport
+CMD ["node", "build/index.js", "--transport", "http", "--port", "8080"]

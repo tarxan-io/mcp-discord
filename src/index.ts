@@ -49,7 +49,7 @@ const config = {
             return parseInt(process.argv[portIndex + 1]);
         }
         // Default port
-        return 3000;
+        return 8080;
     })()
 };
 
