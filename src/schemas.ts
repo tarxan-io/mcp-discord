@@ -1,8 +1,7 @@
 import { z } from "zod";
 
 export const DiscordLoginSchema = z.object({
-    token: z.string().optional(),
-    random_string: z.string().optional()
+    token: z.string().optional()
 });
 
 export const SendMessageSchema = z.object({
