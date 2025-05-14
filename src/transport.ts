@@ -118,8 +118,8 @@ export class StreamableHttpTransport implements MCPTransport {
                 const method = req.body.method;
                 const params = req.body.params || {};
                 
-                // Make sure toolContext is available
-                if (!this.toolContext && method !== 'list_tools') {
+                // Make sure toolContext is available for tool methods
+                if (!this.toolContext && method !== 'list_tools' && method !== 'initialize') {
                     return res.status(500).json({
                         jsonrpc: '2.0',
                         error: {
@@ -134,6 +134,33 @@ export class StreamableHttpTransport implements MCPTransport {
                 
                 // Handle each tool method directly
                 switch (method) {
+                    case 'initialize':
+                        // Handle initialize method for MCP protocol compliance
+                        result = {
+                            protocolVersion: "2025-03-26",
+                            capabilities: {
+                                tools: {
+                                    listChanged: false
+                                },
+                                logging: {}
+                            },
+                            serverInfo: {
+                                name: "MCP-Discord",
+                                version: "1.2.0"
+                            }
+                        };
+                        break;
+                    
+                    case 'notifications/initialized':
+                        // Client indicates it's ready to begin normal operation
+                        info("Client initialized. Starting normal operations.");
+                        // No result needed for notifications
+                        return res.json({
+                            jsonrpc: "2.0",
+                            result: null,
+                            id: req.body.id
+                        });
+                        
                     case 'list_tools':
                         result = { tools: toolList };
                         break;
