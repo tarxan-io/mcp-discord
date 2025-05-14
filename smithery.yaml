@@ -1,7 +1,7 @@
-# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+# Smithery configuration file: https://smithery.ai/docs/build/project-config/smithery.yaml
 
 version: 1
-start:
+startCommand:
   type: http
   configSchema:
     type: object
@@ -10,28 +10,10 @@ start:
     properties:
       discordToken:
         type: string
-        description: Discord bot token. Obtain this from the Discord Developer Portal.
-      port:
-        type: number
-        description: Port number for the HTTP server
-        default: 3000
-  command: 
-    function: |
-      (config) => ({
-        command: 'node',
-        args: [
-          'build/index.js',
-          '--transport',
-          'http',
-          '--port',
-          config.port || 3000,
-          '--config',
-          config.discordToken
-        ],
-        env: {
-          NODE_ENV: 'production'
-        }
-      })
+        title: "Discord Bot Token"
+        description: "Discord bot token. Obtain this from the Discord Developer Portal."
   exampleConfig:
     discordToken: YOUR_DISCORD_BOT_TOKEN
-    port: 3000
+
+build:
+  dockerfile: Dockerfile
