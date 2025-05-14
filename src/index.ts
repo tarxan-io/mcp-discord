@@ -53,11 +53,6 @@ const config = {
     })()
 };
 
-if (!config.DISCORD_TOKEN) {
-    error('Discord token not found. Please provide it via --config argument or environment variable.');
-    process.exit(1);
-}
-
 // Create Discord client
 const client = new Client({
     intents: [
