@@ -184,7 +184,7 @@ export async function getServerInfoHandler(
       };
     }
 
-    // Fetch additional guild data
+    // Fetch additional server data
     await guild.fetch();
     
     // Fetch channel information
@@ -200,8 +200,34 @@ export async function getServerInfoHandler(
       stage: channels.filter(c => c?.type === ChannelType.GuildStageVoice).size,
       total: channels.size
     };
+
+    // Get detailed information for all channels
+    const channelDetails = channels.map(channel => {
+      if (!channel) return null;
+      
+      return {
+        id: channel.id,
+        name: channel.name,
+        type: ChannelType[channel.type] || channel.type,
+        categoryId: channel.parentId,
+        position: channel.position,
+        // Only add topic for text channels
+        topic: 'topic' in channel ? channel.topic : null,
+      };
+    }).filter(c => c !== null); // Filter out null values
     
-    // Fetch member count
+    // Group channels by type
+    const groupedChannels = {
+      text: channelDetails.filter(c => c.type === ChannelType[ChannelType.GuildText] || c.type === ChannelType.GuildText),
+      voice: channelDetails.filter(c => c.type === ChannelType[ChannelType.GuildVoice] || c.type === ChannelType.GuildVoice),
+      category: channelDetails.filter(c => c.type === ChannelType[ChannelType.GuildCategory] || c.type === ChannelType.GuildCategory),
+      forum: channelDetails.filter(c => c.type === ChannelType[ChannelType.GuildForum] || c.type === ChannelType.GuildForum),
+      announcement: channelDetails.filter(c => c.type === ChannelType[ChannelType.GuildAnnouncement] || c.type === ChannelType.GuildAnnouncement),
+      stage: channelDetails.filter(c => c.type === ChannelType[ChannelType.GuildStageVoice] || c.type === ChannelType.GuildStageVoice),
+      all: channelDetails
+    };
+    
+    // Get member count
     const approximateMemberCount = guild.approximateMemberCount || "unknown";
     
     // Format guild information
@@ -213,7 +239,10 @@ export async function getServerInfoHandler(
       owner: guild.ownerId,
       createdAt: guild.createdAt,
       memberCount: approximateMemberCount,
-      channels: channelsByType,
+      channels: {
+        count: channelsByType,
+        details: groupedChannels
+      },
       features: guild.features,
       premium: {
         tier: guild.premiumTier,
