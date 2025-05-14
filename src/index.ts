@@ -111,6 +111,29 @@ const mcpServer = new DiscordMCPServer(client, transport);
 try {
     await mcpServer.start();
     info('MCP server started successfully');
+    
+    // Keep the Node.js process running
+    if (config.TRANSPORT.toLowerCase() === 'http') {
+        // Send a heartbeat every 30 seconds to keep the process alive
+        setInterval(() => {
+            info('MCP server is running');
+        }, 30000);
+        
+        // Handle termination signals
+        process.on('SIGINT', async () => {
+            info('Received SIGINT. Shutting down server...');
+            await mcpServer.stop();
+            process.exit(0);
+        });
+        
+        process.on('SIGTERM', async () => {
+            info('Received SIGTERM. Shutting down server...');
+            await mcpServer.stop();
+            process.exit(0);
+        });
+        
+        info('Server running in keep-alive mode. Press Ctrl+C to stop.');
+    }
 } catch (err) {
     error('Failed to start MCP server: ' + String(err));
     process.exit(1);
