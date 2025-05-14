@@ -14,7 +14,7 @@ MCP-Discord provides the following Discord-related functionalities:
 - Login to Discord bot
 - Get server information
 - Read/delete channel messages
-- Send messages to specified channels
+- Send messages to specified channels (using either channel IDs or channel names)
 - Retrieve forum channel lists
 - Create/delete/reply to forum posts
 - Create/delete text channels
@@ -211,7 +211,7 @@ node build/index.js --transport http --port 3000 --config "your_discord_bot_toke
 ### Basic Functions
 
 - `discord_login`: Login to Discord
-- `discord_send`: Send a message to a specified channel
+- `discord_send`: Send a message to a specified channel (supports both channel ID and channel name)
 - `discord_get_server_info`: Get Discord server information
 
 ### Channel Management
