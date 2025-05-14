@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const DiscordLoginSchema = z.object({
+    token: z.string().optional(),
     random_string: z.string().optional()
 });
 
@@ -108,4 +109,4 @@ export const DeleteWebhookSchema = z.object({
     webhookId: z.string(),
     webhookToken: z.string().optional(),
     reason: z.string().optional()
-}); 
+});

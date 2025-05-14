@@ -6,17 +6,40 @@ export const loginHandler: ToolHandler = async (args, { client }) => {
   DiscordLoginSchema.parse(args);
   
   try {
-    // Check if client is already logged in
+    // Check if token is provided in the request
+    const token = args.token;
+    
+    // If token is provided and client is already logged in, logout first
+    if (token && client.isReady()) {
+      const currentBotTag = client.user?.tag || 'Unknown';
+      // Destroy the client connection to logout
+      await client.destroy();
+      // Set the new token
+      client.token = token;
+      
+      // Login with the new token
+      await client.login(token);
+      return {
+        content: [{ type: "text", text: `Successfully switched from ${currentBotTag} to ${client.user?.tag}` }]
+      };
+    }
+    
+    // Check if client is already logged in (and no new token provided)
     if (client.isReady()) {
       return {
         content: [{ type: "text", text: `Already logged in as: ${client.user?.tag}` }]
       };
     }
     
-    // loginHandler doesn't directly handle token, it needs to be set before invocation
+    // If token is provided in the request, use it
+    if (token) {
+      client.token = token;
+    }
+    
+    // Token needs to be set before login
     if (!client.token) {
       return {
-        content: [{ type: "text", text: "Discord token not configured. Cannot log in. Please check the following:\n1. Make sure the token is correctly set in your config or environment variables.\n\n2. Ensure all required privileged intents (Message Content, Server Members, Presence) are enabled in the Discord Developer Portal for your bot application." }],
+        content: [{ type: "text", text: "Discord token not configured. Cannot log in. Please provide a token in your request or configure it using environment variables." }],
         isError: true
       };
     }
