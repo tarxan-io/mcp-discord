@@ -5,6 +5,50 @@ import { info, error } from '../logger.js';
 import { Client, GatewayIntentBits } from 'discord.js';
 import { createToolContext } from './tools.js';
 
+// Create a function to properly wait for client to be ready
+async function waitForReady(client: Client, token: string, timeoutMs = 10000): Promise<Client> {
+  return new Promise((resolve, reject) => {
+    // Set a timeout to prevent hanging if ready event never fires
+    const timeout = setTimeout(() => {
+      reject(new Error(`Client ready event timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+    
+    // If client is already ready, resolve immediately
+    if (client.isReady()) {
+      clearTimeout(timeout);
+      resolve(client);
+      return;
+    }
+    
+    // Listen for ready event
+    const readyHandler = () => {
+      info('Client ready event received');
+      clearTimeout(timeout);
+      resolve(client);
+    };
+    
+    // Listen for error event
+    const errorHandler = (err: Error) => {
+      clearTimeout(timeout);
+      client.removeListener('ready', readyHandler);
+      reject(err);
+    };
+    
+    // Attach listeners
+    client.once('ready', readyHandler);
+    client.once('error', errorHandler);
+    
+    // Start login process
+    info('Starting login process and waiting for ready event');
+    client.login(token).catch((err: Error) => {
+      clearTimeout(timeout);
+      client.removeListener('ready', readyHandler);
+      client.removeListener('error', errorHandler);
+      reject(err);
+    });
+  });
+}
+
 export const loginHandler: ToolHandler = async (args, context) => {
   DiscordLoginSchema.parse(args);
   
@@ -55,12 +99,10 @@ export const loginHandler: ToolHandler = async (args, context) => {
       // Login with the new token
       info('Attempting login with new token on new client');
       try {
-        await client.login(token);
-        info(`Login successful, new client user: ${client.user?.tag}`);
-        
-        if (!client.isReady()) {
-          throw new Error('Client login completed but client is not in ready state');
-        }
+        // Replace direct login with waitForReady
+        info('Waiting for client ready event');
+        await waitForReady(client, token);
+        info(`Login successful and client is ready, new client user: ${client.user?.tag}`);
         
         return {
           content: [{ type: "text", text: `Successfully switched from ${currentBotTag} to ${client.user?.tag}` }]
@@ -99,26 +141,10 @@ export const loginHandler: ToolHandler = async (args, context) => {
     
     info('Attempting login with token');
     try {
-      // Try login with explicit token parameter
-      info(`Login with explicit token parameter starting`);
-      await client.login(token || client.token);
-      info(`Login successful, client user: ${client.user?.tag}`);
-      
-      // Verify client is actually ready
-      if (!client.isReady()) {
-        error('Client login completed but client.isReady() returned false');
-        // Try to force a second login directly with the token
-        info('Attempting second login with direct token');
-        await client.login(client.token);
-        
-        if (!client.isReady()) {
-          error('Second login attempt failed, client still not ready');
-          return {
-            content: [{ type: "text", text: "Login completed but client is not in ready state. This may indicate an issue with Discord connectivity." }],
-            isError: true
-          };
-        }
-      }
+      // Replace direct login with waitForReady
+      info('Waiting for client ready event');
+      await waitForReady(client, token || client.token);
+      info(`Login successful and client is ready, client user: ${client.user?.tag}`);
       
       info(`Login fully completed, ready state: ${client.isReady()}`);
       return {
