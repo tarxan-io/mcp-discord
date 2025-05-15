@@ -217,14 +217,50 @@ export class StreamableHttpTransport implements MCPTransport {
                                     tag: this.toolContext!.client.user.tag,
                                 } : null
                             })}`);
-                            return res.json({
-                                jsonrpc: '2.0',
-                                error: {
-                                    code: -32603,
-                                    message: 'Discord client not logged in. Please use discord_login tool first.',
-                                },
-                                id: req.body?.id || null,
-                            });
+                            
+                            // Check if we have a token but not ready - try to force reconnect
+                            if (this.toolContext!.client.token) {
+                                info("Has token but not ready - attempting to force reconnect");
+                                try {
+                                    // Attempt to force login with existing token
+                                    await this.toolContext!.client.login(this.toolContext!.client.token);
+                                    info(`Force reconnect successful: ${this.toolContext!.client.isReady()}`);
+                                    
+                                    // If still not ready after reconnect, return error
+                                    if (!this.toolContext!.client.isReady()) {
+                                        return res.json({
+                                            jsonrpc: '2.0',
+                                            error: {
+                                                code: -32603,
+                                                message: 'Discord client reconnect failed. Please use discord_login tool first.',
+                                            },
+                                            id: req.body?.id || null,
+                                        });
+                                    }
+                                    
+                                    // Continue with original request as now logged in
+                                    info("Reconnected successfully, continuing with original request");
+                                } catch (reconnectError) {
+                                    error(`Reconnect failed: ${reconnectError instanceof Error ? reconnectError.message : String(reconnectError)}`);
+                                    return res.json({
+                                        jsonrpc: '2.0',
+                                        error: {
+                                            code: -32603,
+                                            message: 'Discord client reconnect failed. Please use discord_login tool first.',
+                                        },
+                                        id: req.body?.id || null,
+                                    });
+                                }
+                            } else {
+                                return res.json({
+                                    jsonrpc: '2.0',
+                                    error: {
+                                        code: -32603,
+                                        message: 'Discord client not logged in. Please use discord_login tool first.',
+                                    },
+                                    id: req.body?.id || null,
+                                });
+                            }
                         }
                         
                         // Call appropriate handler based on method
@@ -308,14 +344,50 @@ export class StreamableHttpTransport implements MCPTransport {
                                     tag: this.toolContext!.client.user.tag,
                                 } : null
                             })}`);
-                            return res.json({
-                                jsonrpc: '2.0',
-                                error: {
-                                    code: -32603,
-                                    message: 'Discord client not logged in. Please use discord_login tool first.',
-                                },
-                                id: req.body?.id || null,
-                            });
+                            
+                            // Check if we have a token but not ready - try to force reconnect
+                            if (this.toolContext!.client.token) {
+                                info("Has token but not ready - attempting to force reconnect");
+                                try {
+                                    // Attempt to force login with existing token
+                                    await this.toolContext!.client.login(this.toolContext!.client.token);
+                                    info(`Force reconnect successful: ${this.toolContext!.client.isReady()}`);
+                                    
+                                    // If still not ready after reconnect, return error
+                                    if (!this.toolContext!.client.isReady()) {
+                                        return res.json({
+                                            jsonrpc: '2.0',
+                                            error: {
+                                                code: -32603,
+                                                message: 'Discord client reconnect failed. Please use discord_login tool first.',
+                                            },
+                                            id: req.body?.id || null,
+                                        });
+                                    }
+                                    
+                                    // Continue with original request as now logged in
+                                    info("Reconnected successfully, continuing with original request");
+                                } catch (reconnectError) {
+                                    error(`Reconnect failed: ${reconnectError instanceof Error ? reconnectError.message : String(reconnectError)}`);
+                                    return res.json({
+                                        jsonrpc: '2.0',
+                                        error: {
+                                            code: -32603,
+                                            message: 'Discord client reconnect failed. Please use discord_login tool first.',
+                                        },
+                                        id: req.body?.id || null,
+                                    });
+                                }
+                            } else {
+                                return res.json({
+                                    jsonrpc: '2.0',
+                                    error: {
+                                        code: -32603,
+                                        message: 'Discord client not logged in. Please use discord_login tool first.',
+                                    },
+                                    id: req.body?.id || null,
+                                });
+                            }
                         }
                         
                         // Call the appropriate handler based on tool name
