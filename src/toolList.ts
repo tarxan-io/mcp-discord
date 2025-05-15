@@ -5,7 +5,7 @@ export const toolList = [
     inputSchema: {
       type: "object",
       properties: {
-        random_string: { type: "string" }
+        token: { type: "string" }
       },
       required: []
     }

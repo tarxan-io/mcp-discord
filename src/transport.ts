@@ -247,6 +247,106 @@ export class StreamableHttpTransport implements MCPTransport {
                         result = await deleteWebhookHandler(params, this.toolContext!);
                         break;
                         
+                    case 'ping':
+                        // Add support for heartbeat ping
+                        result = { pong: true };
+                        break;
+                        
+                    case 'tools/call':
+                        // Handle new tools/call method format
+                        const toolName = params.name;
+                        const toolArgs = params.arguments || {};
+                        
+                        // Call the appropriate handler based on tool name
+                        switch (toolName) {
+                            case 'discord_login':
+                                result = await loginHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_send':
+                                result = await sendMessageHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_get_forum_channels':
+                                result = await getForumChannelsHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_create_forum_post':
+                                result = await createForumPostHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_get_forum_post':
+                                result = await getForumPostHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_reply_to_forum':
+                                result = await replyToForumHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_delete_forum_post':
+                                result = await deleteForumPostHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_create_text_channel':
+                                result = await createTextChannelHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_delete_channel':
+                                result = await deleteChannelHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_read_messages':
+                                result = await readMessagesHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_get_server_info':
+                                result = await getServerInfoHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_add_reaction':
+                                result = await addReactionHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_add_multiple_reactions':
+                                result = await addMultipleReactionsHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_remove_reaction':
+                                result = await removeReactionHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_delete_message':
+                                result = await deleteMessageHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_create_webhook':
+                                result = await createWebhookHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_send_webhook_message':
+                                result = await sendWebhookMessageHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_edit_webhook':
+                                result = await editWebhookHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            case 'discord_delete_webhook':
+                                result = await deleteWebhookHandler(toolArgs, this.toolContext!);
+                                break;
+                                
+                            default:
+                                return res.status(400).json({
+                                    jsonrpc: '2.0',
+                                    error: {
+                                        code: -32601,
+                                        message: `Unknown tool: ${toolName}`,
+                                    },
+                                    id: req.body?.id || null,
+                                });
+                        }
+                        break;
+                        
                     default:
                         return res.status(400).json({
                             jsonrpc: '2.0',
