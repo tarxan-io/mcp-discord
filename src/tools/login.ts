@@ -2,13 +2,16 @@ import { DiscordLoginSchema } from '../schemas.js';
 import { ToolHandler } from './types.js';
 import { handleDiscordError } from "../errorHandler.js";
 import { info, error } from '../logger.js';
+import { Client, GatewayIntentBits } from 'discord.js';
+import { createToolContext } from './tools.js';
 
-export const loginHandler: ToolHandler = async (args, { client }) => {
+export const loginHandler: ToolHandler = async (args, context) => {
   DiscordLoginSchema.parse(args);
   
   try {
     // Check if token is provided in the request
     const token = args.token;
+    let { client } = context;
 
     // Log initial client state
     info(`Login handler called with client state: ${JSON.stringify({
@@ -30,15 +33,34 @@ export const loginHandler: ToolHandler = async (args, { client }) => {
       await client.destroy();
       info('Client destroyed successfully');
       
-      // Set the new token and ensure it's not null
+      // Create a new client instead of reusing the old one
+      info('Creating new client instance for new token');
+      const newClient = new Client({
+        intents: [
+          GatewayIntentBits.Guilds,
+          GatewayIntentBits.GuildMessages,
+          GatewayIntentBits.MessageContent,
+          GatewayIntentBits.GuildMessageReactions
+        ]
+      });
+      
+      // Replace the old client in the context
+      Object.assign(context, { client: newClient });
+      client = newClient;
+      
+      // Set the token on the new client
       client.token = token;
-      info(`Token set: ${!!client.token}`);
+      info(`Token set on new client: ${!!client.token}`);
       
       // Login with the new token
-      info('Attempting login with new token');
+      info('Attempting login with new token on new client');
       try {
         await client.login(token);
         info(`Login successful, new client user: ${client.user?.tag}`);
+        
+        if (!client.isReady()) {
+          throw new Error('Client login completed but client is not in ready state');
+        }
         
         return {
           content: [{ type: "text", text: `Successfully switched from ${currentBotTag} to ${client.user?.tag}` }]
