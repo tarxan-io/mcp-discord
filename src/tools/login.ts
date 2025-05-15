@@ -30,17 +30,23 @@ export const loginHandler: ToolHandler = async (args, { client }) => {
       await client.destroy();
       info('Client destroyed successfully');
       
-      // Set the new token
+      // Set the new token and ensure it's not null
       client.token = token;
+      info(`Token set: ${!!client.token}`);
       
       // Login with the new token
       info('Attempting login with new token');
-      await client.login(token);
-      info(`Login successful, new client user: ${client.user?.tag}`);
-      
-      return {
-        content: [{ type: "text", text: `Successfully switched from ${currentBotTag} to ${client.user?.tag}` }]
-      };
+      try {
+        await client.login(token);
+        info(`Login successful, new client user: ${client.user?.tag}`);
+        
+        return {
+          content: [{ type: "text", text: `Successfully switched from ${currentBotTag} to ${client.user?.tag}` }]
+        };
+      } catch (innerError) {
+        error(`Failed to login after destroy: ${innerError instanceof Error ? innerError.message : String(innerError)}`);
+        return handleDiscordError(innerError);
+      }
     }
     
     // Check if client is already logged in (and no new token provided)
@@ -55,6 +61,7 @@ export const loginHandler: ToolHandler = async (args, { client }) => {
     if (token) {
       info('Setting token from request');
       client.token = token;
+      info(`Token set to request value: ${!!client.token}`);
     } else {
       info('No token in request, checking for existing token');
     }
@@ -70,18 +77,28 @@ export const loginHandler: ToolHandler = async (args, { client }) => {
     
     info('Attempting login with token');
     try {
-      await client.login(client.token);
+      // Try login with explicit token parameter
+      info(`Login with explicit token parameter starting`);
+      await client.login(token || client.token);
       info(`Login successful, client user: ${client.user?.tag}`);
       
       // Verify client is actually ready
       if (!client.isReady()) {
         error('Client login completed but client.isReady() returned false');
-        return {
-          content: [{ type: "text", text: "Login completed but client is not in ready state. This may indicate an issue with Discord connectivity." }],
-          isError: true
-        };
+        // Try to force a second login directly with the token
+        info('Attempting second login with direct token');
+        await client.login(client.token);
+        
+        if (!client.isReady()) {
+          error('Second login attempt failed, client still not ready');
+          return {
+            content: [{ type: "text", text: "Login completed but client is not in ready state. This may indicate an issue with Discord connectivity." }],
+            isError: true
+          };
+        }
       }
       
+      info(`Login fully completed, ready state: ${client.isReady()}`);
       return {
         content: [{ type: "text", text: `Successfully logged in to Discord: ${client.user?.tag}` }]
       };
