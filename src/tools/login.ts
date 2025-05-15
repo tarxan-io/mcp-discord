@@ -6,7 +6,7 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import { createToolContext } from './tools.js';
 
 // Create a function to properly wait for client to be ready
-async function waitForReady(client: Client, token: string, timeoutMs = 10000): Promise<Client> {
+async function waitForReady(client: Client, token: string, timeoutMs = 30000): Promise<Client> {
   return new Promise((resolve, reject) => {
     // Set a timeout to prevent hanging if ready event never fires
     const timeout = setTimeout(() => {
