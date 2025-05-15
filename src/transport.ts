@@ -25,7 +25,7 @@ import {
   editWebhookHandler,
   deleteWebhookHandler
 } from './tools/tools.js';
-import { Client } from "discord.js";
+import { Client, GatewayIntentBits } from "discord.js";
 import { info, error } from './logger.js';
 
 export interface MCPTransport {
@@ -535,9 +535,18 @@ export class StreamableHttpTransport implements MCPTransport {
                 this.toolContext = createToolContext(client);
                 info('Tool context initialized with Discord client');
             } else {
-                // Create a dummy client for testing - allows list_tools to work
-                info('Unable to get Discord client. Creating tool context without client.');
-                this.toolContext = createToolContext({} as Client);
+                // Create a real Discord client instead of a dummy
+                info('Creating new Discord client for transport');
+                const newClient = new Client({
+                    intents: [
+                        GatewayIntentBits.Guilds,
+                        GatewayIntentBits.GuildMessages,
+                        GatewayIntentBits.MessageContent,
+                        GatewayIntentBits.GuildMessageReactions
+                    ]
+                });
+                this.toolContext = createToolContext(newClient);
+                info('Tool context initialized with new Discord client');
             }
         }
         
