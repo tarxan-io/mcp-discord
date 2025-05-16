@@ -75,8 +75,10 @@ export const loginHandler: ToolHandler = async (args, context) => {
           context.client.token = args.token;
         }
         
-        // Attempt to log in with the token
-        await context.client.login(token);
+        // Attempt to log in with the token and get the ready client
+        const readyClient = await waitForReady(context.client, token);
+        // Update the context client with the ready client
+        context.client = readyClient;
         return {
           content: [{ type: "text", text: `Successfully logged in to Discord: ${context.client.user?.tag}` }]
         };
