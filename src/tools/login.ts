@@ -59,15 +59,24 @@ export const loginHandler: ToolHandler = async (args, context) => {
           };
         }
         
-        // loginHandler doesn't directly handle token, it needs to be set before invocation
-        if (!context.client.token) {
+        // Use token from args if provided, otherwise fall back to the client's token
+        const token = args.token || context.client.token;
+        
+        // Check if we have a token to use
+        if (!token) {
           return {
-            content: [{ type: "text", text: "Discord token not configured. Cannot log in. Please check the following:\n1. Make sure the token is correctly set in your config or environment variables.\n\n2. Ensure all required privileged intents (Message Content, Server Members, Presence) are enabled in the Discord Developer Portal for your bot application." }],
+            content: [{ type: "text", text: "Discord token not provided and not configured. Cannot log in. Please check the following: 1. Provide a token in the login command or make sure the token is correctly set in your config or environment variables. 2. Ensure all required privileged intents (Message Content, Server Members, Presence) are enabled in the Discord Developer Portal for your bot application." }],
             isError: true
           };
         }
         
-        await context.client.login(context.client.token);
+        // If token is provided in args, update the client's token
+        if (args.token) {
+          context.client.token = args.token;
+        }
+        
+        // Attempt to log in with the token
+        await context.client.login(token);
         return {
           content: [{ type: "text", text: `Successfully logged in to Discord: ${context.client.user?.tag}` }]
         };
