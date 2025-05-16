@@ -322,10 +322,7 @@ export class StreamableHttpTransport implements MCPTransport {
                         }
                         break;
                         
-                    case 'ping':
-                        // Add support for heartbeat ping
-                        result = { pong: true };
-                        break;
+                
                         
                     case 'tools/call':
                         // Handle new tools/call method format
@@ -490,14 +487,22 @@ export class StreamableHttpTransport implements MCPTransport {
                         break;
                         
                     default:
-                        return res.status(400).json({
-                            jsonrpc: '2.0',
-                            error: {
-                                code: -32601,
-                                message: `Method not found: ${method}`,
-                            },
-                            id: req.body?.id || null,
-                        });
+                        // For method 'ping' and other non-critical methods, just return an empty result
+                        // This ensures MCP compatibility for health checks and probes
+                        if (method === 'ping') {
+                            info(`Returning empty response for ping request`);
+                            result = {};
+                        } else {
+                            // For other unknown methods, return method not found error
+                            return res.status(400).json({
+                                jsonrpc: '2.0',
+                                error: {
+                                    code: -32601,
+                                    message: `Method not found: ${method}`,
+                                },
+                                id: req.body?.id || null,
+                            });
+                        }
                 }
                 
                 info(`Request for ${method} handled successfully`);
