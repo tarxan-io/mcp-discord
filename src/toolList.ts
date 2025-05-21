@@ -1,5 +1,45 @@
 export const toolList = [
   {
+    name: "discord_create_category",
+    description: "Creates a new category in a Discord server.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        guildId: { type: "string" },
+        name: { type: "string" },
+        position: { type: "number" },
+        reason: { type: "string" }
+      },
+      required: ["guildId", "name"]
+    }
+  },
+  {
+    name: "discord_edit_category",
+    description: "Edits an existing Discord category (name and position).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        categoryId: { type: "string" },
+        name: { type: "string" },
+        position: { type: "number" },
+        reason: { type: "string" }
+      },
+      required: ["categoryId"]
+    }
+  },
+  {
+    name: "discord_delete_category",
+    description: "Deletes a Discord category by ID.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        categoryId: { type: "string" },
+        reason: { type: "string" }
+      },
+      required: ["categoryId"]
+    }
+  },
+  {
     name: "discord_login",
     description: "Logs in to Discord using the configured token",
     inputSchema: {

@@ -5,16 +5,113 @@ import {
   CreateTextChannelSchema, 
   DeleteChannelSchema, 
   ReadMessagesSchema,
-  GetServerInfoSchema
+  GetServerInfoSchema,
+  CreateCategorySchema,
+  EditCategorySchema,
+  DeleteCategorySchema
 } from "../schemas.js";
 import { handleDiscordError } from "../errorHandler.js";
+
+  // Category creation handler
+export async function createCategoryHandler(
+  args: unknown,
+  context: ToolContext
+): Promise<ToolResponse> {
+  const { guildId, name, position, reason } = CreateCategorySchema.parse(args);
+  try {
+    if (!context.client.isReady()) {
+      return {
+        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        isError: true
+      };
+    }
+    const guild = await context.client.guilds.fetch(guildId);
+    if (!guild) {
+      return {
+        content: [{ type: "text", text: `Cannot find guild with ID: ${guildId}` }],
+        isError: true
+      };
+    }
+    const options: any = { name, type: ChannelType.GuildCategory };
+    if (typeof position === "number") options.position = position;
+    if (reason) options.reason = reason;
+    const category = await guild.channels.create(options);
+    return {
+      content: [{ type: "text", text: `Successfully created category "${name}" with ID: ${category.id}` }]
+    };
+  } catch (error) {
+    return handleDiscordError(error);
+  }
+}
+
+// Category edit handler
+export async function editCategoryHandler(
+  args: unknown,
+  context: ToolContext
+): Promise<ToolResponse> {
+  const { categoryId, name, position, reason } = EditCategorySchema.parse(args);
+  try {
+    if (!context.client.isReady()) {
+      return {
+        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        isError: true
+      };
+    }
+    const category = await context.client.channels.fetch(categoryId);
+    if (!category || category.type !== ChannelType.GuildCategory) {
+      return {
+        content: [{ type: "text", text: `Cannot find category with ID: ${categoryId}` }],
+        isError: true
+      };
+    }
+    const update: any = {};
+    if (name) update.name = name;
+    if (typeof position === "number") update.position = position;
+    if (reason) update.reason = reason;
+    await category.edit(update);
+    return {
+      content: [{ type: "text", text: `Successfully edited category with ID: ${categoryId}` }]
+    };
+  } catch (error) {
+    return handleDiscordError(error);
+  }
+}
+
+// Category deletion handler
+export async function deleteCategoryHandler(
+  args: unknown,
+  context: ToolContext
+): Promise<ToolResponse> {
+  const { categoryId, reason } = DeleteCategorySchema.parse(args);
+  try {
+    if (!context.client.isReady()) {
+      return {
+        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        isError: true
+      };
+    }
+    const category = await context.client.channels.fetch(categoryId);
+    if (!category || category.type !== ChannelType.GuildCategory) {
+      return {
+        content: [{ type: "text", text: `Cannot find category with ID: ${categoryId}` }],
+        isError: true
+      };
+    }
+    await category.delete(reason || "Category deleted via API");
+    return {
+      content: [{ type: "text", text: `Successfully deleted category with ID: ${categoryId}` }]
+    };
+  } catch (error) {
+    return handleDiscordError(error);
+  }
+}
 
   // Text channel creation handler
 export async function createTextChannelHandler(
   args: unknown, 
   context: ToolContext
 ): Promise<ToolResponse> {
-  const { guildId, channelName, topic } = CreateTextChannelSchema.parse(args);
+  const { guildId, channelName, topic, reason } = CreateTextChannelSchema.parse(args);
   try {
     if (!context.client.isReady()) {
       return {
@@ -32,11 +129,13 @@ export async function createTextChannelHandler(
     }
 
     // Create the text channel
-    const channel = await guild.channels.create({
+    const channelOptions: any = {
       name: channelName,
-      type: ChannelType.GuildText,
-      topic: topic
-    });
+      type: ChannelType.GuildText
+    };
+    if (topic) channelOptions.topic = topic;
+    if (reason) channelOptions.reason = reason;
+    const channel = await guild.channels.create(channelOptions);
 
     return {
       content: [{ 
