@@ -26,7 +26,10 @@ import {
   createWebhookHandler,
   sendWebhookMessageHandler,
   editWebhookHandler,
-  deleteWebhookHandler
+  deleteWebhookHandler,
+  createCategoryHandler,
+  editCategoryHandler,
+  deleteCategoryHandler
 } from './tools/tools.js';
 import { MCPTransport } from './transport.js';
 import { info, error } from './logger.js';
@@ -71,6 +74,15 @@ export class DiscordMCPServer {
       try {
         let toolResponse;
         switch (name) {
+          case "discord_create_category":
+            toolResponse = await createCategoryHandler(args, this.toolContext);
+            return toolResponse;
+          case "discord_edit_category":
+            toolResponse = await editCategoryHandler(args, this.toolContext);
+            return toolResponse;
+          case "discord_delete_category":
+            toolResponse = await deleteCategoryHandler(args, this.toolContext);
+            return toolResponse;
           case "discord_login":
             toolResponse = await loginHandler(args, this.toolContext);
             // Check the client state after login

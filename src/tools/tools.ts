@@ -14,7 +14,10 @@ import {
   createTextChannelHandler,
   deleteChannelHandler,
   readMessagesHandler,
-  getServerInfoHandler
+  getServerInfoHandler,
+  createCategoryHandler,
+  editCategoryHandler,
+  deleteCategoryHandler
 } from './channel.js';
 import {
   addReactionHandler,
@@ -49,7 +52,10 @@ export {
   createWebhookHandler,
   sendWebhookMessageHandler,
   editWebhookHandler,
-  deleteWebhookHandler
+  deleteWebhookHandler,
+  createCategoryHandler,
+  editCategoryHandler,
+  deleteCategoryHandler
 };
 
 // Export common types

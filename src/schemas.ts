@@ -32,7 +32,28 @@ export const ReplyToForumSchema = z.object({
 export const CreateTextChannelSchema = z.object({
     guildId: z.string(),
     channelName: z.string(),
-    topic: z.string().optional()
+    topic: z.string().optional(),
+    reason: z.string().optional()
+});
+
+// Category schemas
+export const CreateCategorySchema = z.object({
+    guildId: z.string(),
+    name: z.string(),
+    position: z.number().optional(),
+    reason: z.string().optional()
+});
+
+export const EditCategorySchema = z.object({
+    categoryId: z.string(),
+    name: z.string().optional(),
+    position: z.number().optional(),
+    reason: z.string().optional()
+});
+
+export const DeleteCategorySchema = z.object({
+    categoryId: z.string(),
+    reason: z.string().optional()
 });
 
 export const DeleteChannelSchema = z.object({
