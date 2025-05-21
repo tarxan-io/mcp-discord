@@ -23,7 +23,10 @@ import {
   createWebhookHandler,
   sendWebhookMessageHandler,
   editWebhookHandler,
-  deleteWebhookHandler
+  deleteWebhookHandler,
+  editCategoryHandler,
+  createCategoryHandler,
+  deleteCategoryHandler
 } from './tools/tools.js';
 import { Client, GatewayIntentBits } from "discord.js";
 import { info, error } from './logger.js';
@@ -207,6 +210,9 @@ export class StreamableHttpTransport implements MCPTransport {
                     case 'discord_send_webhook_message':
                     case 'discord_edit_webhook':
                     case 'discord_delete_webhook':
+                    case 'discord_create_category':
+                    case 'discord_edit_category':
+                    case 'discord_delete_category':
                         // Check if client is logged in
                         if (!this.toolContext!.client.isReady()) {
                             error(`Client not ready for method ${method}, client state: ${JSON.stringify({
@@ -319,6 +325,16 @@ export class StreamableHttpTransport implements MCPTransport {
                             case 'discord_delete_webhook':
                                 result = await deleteWebhookHandler(params, this.toolContext!);
                                 break;
+                            case 'discord_create_category':
+                                result = await createCategoryHandler(params, this.toolContext!);
+                                break;
+                            case 'discord_edit_category':
+                                result = await editCategoryHandler(params, this.toolContext!);
+                                break;
+                            case 'discord_delete_category':
+                                result = await deleteCategoryHandler(params, this.toolContext!);
+                                break;
+                                
                         }
                         break;
                         
@@ -472,6 +488,15 @@ export class StreamableHttpTransport implements MCPTransport {
                                 
                             case 'discord_delete_webhook':
                                 result = await deleteWebhookHandler(toolArgs, this.toolContext!);
+                                break;
+                            case 'discord_create_category':
+                                result = await createCategoryHandler(toolArgs, this.toolContext!);
+                                break;
+                            case 'discord_edit_category':
+                                result = await editCategoryHandler(toolArgs, this.toolContext!);
+                                break;
+                            case 'discord_delete_category':
+                                result = await deleteCategoryHandler(toolArgs, this.toolContext!);
                                 break;
                                 
                             default:
