@@ -1,6 +1,16 @@
 # Smithery configuration file: https://smithery.ai/docs/build/project-config/smithery.yaml
 
 version: 1
+runtime: "container"
+build:
+  dockerfile: "Dockerfile"           # Path to your Dockerfile
+  dockerBuildPath: "."               # Docker build context
+  dockerBuildArgs:
+    DISCORD_TOKEN: ${discordToken}
+  dockerBuildEnv:
+    DISCORD_TOKEN: ${discordToken}
+  dockerRunEnv:
+    DISCORD_TOKEN: ${discordToken}
 startCommand:
   type: http
   configSchema:
@@ -14,6 +24,3 @@ startCommand:
         description: "Discord bot token. Obtain this from the Discord Developer Portal."
   exampleConfig:
     discordToken: YOUR_DISCORD_BOT_TOKEN
-
-build:
-  dockerfile: Dockerfile
