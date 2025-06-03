@@ -3,24 +3,20 @@
 version: 1
 runtime: "container"
 build:
-  dockerfile: "Dockerfile"           # Path to your Dockerfile
-  dockerBuildPath: "."               # Docker build context
-  dockerBuildArgs:
-    DISCORD_TOKEN: ${discordToken}
-  dockerBuildEnv:
-    DISCORD_TOKEN: ${discordToken}
+  dockerfile: "Dockerfile"
+  dockerBuildPath: "."
   dockerRunEnv:
-    DISCORD_TOKEN: ${discordToken}
+    DISCORD_TOKEN: ${DISCORD_TOKEN}
 startCommand:
   type: http
   configSchema:
     type: object
     required:
-      - discordToken
+      - DISCORD_TOKEN
     properties:
-      discordToken:
+      DISCORD_TOKEN:
         type: string
         title: "Discord Bot Token"
         description: "Discord bot token. Obtain this from the Discord Developer Portal."
   exampleConfig:
-    discordToken: YOUR_DISCORD_BOT_TOKEN
+    DISCORD_TOKEN: YOUR_DISCORD_BOT_TOKEN
