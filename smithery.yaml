@@ -8,13 +8,3 @@ startCommand:
         type: string
         title: "Discord Bot Token"
         description: "Discord bot token. Obtain this from the Discord Developer Portal."
-  exampleConfig:
-    DISCORD_TOKEN: YOUR_DISCORD_BOT_TOKEN
-commandFunction: |
-  (config) => ({
-    command: 'node',
-    args: ['build/index.js', '--transport', 'http', '--port', '8080'],
-    env: {
-      DISCORD_TOKEN: config.discordToken
-    }
-  })
