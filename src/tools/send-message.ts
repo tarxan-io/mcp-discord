@@ -8,7 +8,7 @@ export const sendMessageHandler: ToolHandler = async (args, { client }) => {
   try {
     if (!client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }

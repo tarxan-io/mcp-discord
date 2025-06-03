@@ -17,7 +17,7 @@ export async function addReactionHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -61,7 +61,7 @@ export async function addMultipleReactionsHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -109,7 +109,7 @@ export async function removeReactionHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -176,7 +176,7 @@ export async function deleteMessageHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }

@@ -21,7 +21,7 @@ export async function createCategoryHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -53,7 +53,7 @@ export async function editCategoryHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -86,7 +86,7 @@ export async function deleteCategoryHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -115,7 +115,7 @@ export async function createTextChannelHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -157,7 +157,7 @@ export async function deleteChannelHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -201,7 +201,7 @@ export async function readMessagesHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -270,7 +270,7 @@ export async function getServerInfoHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }

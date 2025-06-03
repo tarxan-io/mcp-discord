@@ -83,11 +83,6 @@ export class DiscordMCPServer {
           case "discord_delete_category":
             toolResponse = await deleteCategoryHandler(args, this.toolContext);
             return toolResponse;
-          case "discord_login":
-            toolResponse = await loginHandler(args, this.toolContext);
-            // Check the client state after login
-            this.logClientState("after discord_login handler");
-            return toolResponse;
 
           case "discord_send":
             this.logClientState("before discord_send handler");

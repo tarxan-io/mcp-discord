@@ -177,19 +177,6 @@ export class StreamableHttpTransport implements MCPTransport {
                         result = { tools: toolList };
                         break;
                         
-                    case 'discord_login':
-                        result = await loginHandler(params, this.toolContext!);
-                        // Log client state after login
-                        info(`Client state after login: ${JSON.stringify({
-                            isReady: this.toolContext!.client.isReady(),
-                            hasToken: !!this.toolContext!.client.token,
-                            user: this.toolContext!.client.user ? {
-                                id: this.toolContext!.client.user.id,
-                                tag: this.toolContext!.client.user.tag,
-                            } : null
-                        })}`);
-                        break;
-                        
                     // Make sure Discord client is logged in for other Discord API tools 
                     // but return a proper JSON-RPC error rather than throwing an exception
                     case 'discord_send':
@@ -238,7 +225,7 @@ export class StreamableHttpTransport implements MCPTransport {
                                             jsonrpc: '2.0',
                                             error: {
                                                 code: -32603,
-                                                message: 'Discord client reconnect failed. Please use discord_login tool first.',
+                                                message: 'Discord client reconnect failed.',
                                             },
                                             id: req.body?.id || null,
                                         });
@@ -252,7 +239,7 @@ export class StreamableHttpTransport implements MCPTransport {
                                         jsonrpc: '2.0',
                                         error: {
                                             code: -32603,
-                                            message: 'Discord client reconnect failed. Please use discord_login tool first.',
+                                            message: 'Discord client reconnect failed.',
                                         },
                                         id: req.body?.id || null,
                                     });
@@ -262,7 +249,7 @@ export class StreamableHttpTransport implements MCPTransport {
                                     jsonrpc: '2.0',
                                     error: {
                                         code: -32603,
-                                        message: 'Discord client not logged in. Please use discord_login tool first.',
+                                        message: 'Discord client not logged in.',
                                     },
                                     id: req.body?.id || null,
                                 });
@@ -346,8 +333,7 @@ export class StreamableHttpTransport implements MCPTransport {
                         const toolArgs = params.arguments || {};
                         
                         // Check if Discord client is logged in for Discord API tools
-                        if (toolName !== 'discord_login' && 
-                            toolName.startsWith('discord_') && 
+                        if (toolName.startsWith('discord_') && 
                             !this.toolContext!.client.isReady()) {
                             error(`Client not ready for tool ${toolName}, client state: ${JSON.stringify({
                                 isReady: this.toolContext!.client.isReady(),
@@ -372,7 +358,7 @@ export class StreamableHttpTransport implements MCPTransport {
                                             jsonrpc: '2.0',
                                             error: {
                                                 code: -32603,
-                                                message: 'Discord client reconnect failed. Please use discord_login tool first.',
+                                                message: 'Discord client reconnect failed.',
                                             },
                                             id: req.body?.id || null,
                                         });
@@ -386,7 +372,7 @@ export class StreamableHttpTransport implements MCPTransport {
                                         jsonrpc: '2.0',
                                         error: {
                                             code: -32603,
-                                            message: 'Discord client reconnect failed. Please use discord_login tool first.',
+                                            message: 'Discord client reconnect failed.',
                                         },
                                         id: req.body?.id || null,
                                     });
@@ -396,7 +382,7 @@ export class StreamableHttpTransport implements MCPTransport {
                                     jsonrpc: '2.0',
                                     error: {
                                         code: -32603,
-                                        message: 'Discord client not logged in. Please use discord_login tool first.',
+                                        message: 'Discord client not logged in.',
                                     },
                                     id: req.body?.id || null,
                                 });
@@ -404,20 +390,7 @@ export class StreamableHttpTransport implements MCPTransport {
                         }
                         
                         // Call the appropriate handler based on tool name
-                        switch (toolName) {
-                            case 'discord_login':
-                                result = await loginHandler(toolArgs, this.toolContext!);
-                                // Log client state after login
-                                info(`Client state after login: ${JSON.stringify({
-                                    isReady: this.toolContext!.client.isReady(),
-                                    hasToken: !!this.toolContext!.client.token,
-                                    user: this.toolContext!.client.user ? {
-                                        id: this.toolContext!.client.user.id,
-                                        tag: this.toolContext!.client.user.tag,
-                                    } : null
-                                })}`);
-                                break;
-                                
+                        switch (toolName) {    
                             case 'discord_send':
                                 result = await sendMessageHandler(toolArgs, this.toolContext!);
                                 break;

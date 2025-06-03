@@ -40,17 +40,6 @@ export const toolList = [
     }
   },
   {
-    name: "discord_login",
-    description: "Logs in to Discord using the configured token",
-    inputSchema: {
-      type: "object",
-      properties: {
-        token: { type: "string" }
-      },
-      required: []
-    }
-  },
-  {
     name: "discord_send",
     description: "Sends a message to a specified Discord text channel",
     inputSchema: {

@@ -210,7 +210,6 @@ node build/index.js --transport http --port 3000 --config "your_discord_bot_toke
 
 ### Basic Functions
 
-- `discord_login`: Login to Discord
 - `discord_send`: Send a message to a specified channel (supports both channel ID and channel name)
 - `discord_get_server_info`: Get Discord server information
 

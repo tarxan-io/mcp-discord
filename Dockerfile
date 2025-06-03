@@ -19,5 +19,5 @@ RUN npm run build
 # Expose HTTP port
 EXPOSE 8080
 
-# Default command to run the MCP server with HTTP transport
-CMD ["node", "build/index.js", "--transport", "http", "--port", "8080"]
+# Default command to run the MCP server with HTTP transport and Discord token
+CMD ["node", "build/index.js", "--transport", "http", "--port", "8080", "--config", "{\"DISCORD_TOKEN\":\"${DISCORD_TOKEN}\"}"]

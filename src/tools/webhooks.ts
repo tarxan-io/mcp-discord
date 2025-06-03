@@ -17,7 +17,7 @@ export async function createWebhookHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -65,7 +65,7 @@ export async function sendWebhookMessageHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -106,7 +106,7 @@ export async function editWebhookHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -147,7 +147,7 @@ export async function deleteWebhookHandler(
   try {
     if (!context.client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }

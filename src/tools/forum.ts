@@ -9,7 +9,7 @@ export const getForumChannelsHandler: ToolHandler = async (args, { client }) => 
   try {
     if (!client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -55,7 +55,7 @@ export const createForumPostHandler: ToolHandler = async (args, { client }) => {
   try {
     if (!client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -107,7 +107,7 @@ export const getForumPostHandler: ToolHandler = async (args, { client }) => {
   try {
     if (!client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -151,7 +151,7 @@ export const replyToForumHandler: ToolHandler = async (args, { client }) => {
   try {
     if (!client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
@@ -191,7 +191,7 @@ export const deleteForumPostHandler: ToolHandler = async (args, { client }) => {
   try {
     if (!client.isReady()) {
       return {
-        content: [{ type: "text", text: "Discord client not logged in. Please use discord_login tool first." }],
+        content: [{ type: "text", text: "Discord client not logged in." }],
         isError: true
       };
     }
