@@ -9,9 +9,9 @@ startCommand:
   type: http
   configSchema:
     type: object
-    required: ["DISCORD_TOKEN"]
+    required: ["discordToken"]
     properties:
-      DISCORD_TOKEN:
+      discordToken:
         type: string
         title: "Discord Bot Token"
         description: "Discord bot token. Obtain this from the Discord Developer Portal."
@@ -20,8 +20,8 @@ startCommand:
 commandFunction: |
   (config) => ({
     command: 'node',
-    args: ['build/index.js', '--transport', 'http', '--port', '8080', '--config', config.DISCORD_TOKEN],
+    args: ['build/index.js', '--transport', 'http', '--port', '8080'],
     env: {
-      DISCORD_TOKEN: config.DISCORD_TOKEN
+      DISCORD_TOKEN: config.discordToken
     }
   })
