@@ -5,8 +5,6 @@ runtime: "container"
 build:
   dockerfile: "Dockerfile"
   dockerBuildPath: "."
-  dockerRunEnv:
-    DISCORD_TOKEN: ${DISCORD_TOKEN}
 startCommand:
   type: http
   configSchema:
