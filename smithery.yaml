@@ -9,8 +9,7 @@ startCommand:
   type: http
   configSchema:
     type: object
-    required:
-      - DISCORD_TOKEN
+    required: ["DISCORD_TOKEN"]
     properties:
       DISCORD_TOKEN:
         type: string
@@ -18,8 +17,11 @@ startCommand:
         description: "Discord bot token. Obtain this from the Discord Developer Portal."
   exampleConfig:
     DISCORD_TOKEN: YOUR_DISCORD_BOT_TOKEN
-  commandFunction: |
-    (config) => ({
-      command: 'node',
-      args: ['build/index.js', '--transport', 'http', '--port', '8080', '--config', config.DISCORD_TOKEN],
-    })
+commandFunction: |
+  (config) => ({
+    command: 'node',
+    args: ['build/index.js', '--transport', 'http', '--port', '8080', '--config', config.DISCORD_TOKEN],
+    env: {
+      DISCORD_TOKEN: config.DISCORD_TOKEN
+    }
+  })
