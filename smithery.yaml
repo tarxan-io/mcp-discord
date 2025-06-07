@@ -1,10 +1,13 @@
 startCommand:
-  type: http
+  type: stdio
   configSchema:
     type: object
-    required: ["discordToken"]
+    required:
+      - discordToken
     properties:
       discordToken:
         type: string
-        title: "Discord Bot Token"
-        description: "Discord bot token. Obtain this from the Discord Developer Portal."
+        description: The bot token for Discord integration.
+  commandFunction:
+    |-
+    config => ({command: 'node', args: ['./build/index.js', '--transport', 'http', '--port', '8080'], env: {DISCORD_TOKEN: config.discordToken}})
