@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy package files
 COPY package.json package-lock.json ./
 
-# Install dependencies without running scripts
-RUN npm install --ignore-scripts
+# Install dependencies
+RUN npm ci
 
 # Copy source code
 COPY . .
